@@ -43,9 +43,7 @@ void bienvenida(){
 }
 int main(){
     string nombre;
-       
-    cout<<"di tu nomnre como sea gonorreaaaaaaa ";
-    
+          
     bienvenida();
     return 0;
 }

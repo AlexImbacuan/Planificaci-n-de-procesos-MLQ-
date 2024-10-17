@@ -69,7 +69,7 @@ void Algoritmo::setWT(string etiq_entradawt, int wt_entrada){
         }
     }
 }
-void Algoritmo::setCT(strint etiq_entradact, int ct_entrada){
+void Algoritmo::setCT(string etiq_entradact, int ct_entrada){
     for (int i = 0; i < tamano; i++) { 
         if (etiqueta[i] == etiq_entradact) {
             ct[i] = ct_entrada;
@@ -77,7 +77,7 @@ void Algoritmo::setCT(strint etiq_entradact, int ct_entrada){
         }
     }
 }
-void Algoritmo::setRT(strint etiq_entradart, int rt_entrada){
+void Algoritmo::setRT(string etiq_entradart, int rt_entrada){
         for (int i = 0; i < tamano; i++) { 
         if (etiqueta[i] == etiq_entradart) {
             rt[i] = rt_entrada;
@@ -87,6 +87,12 @@ void Algoritmo::setRT(strint etiq_entradart, int rt_entrada){
 }
 int Algoritmo::getReloj(){
     return reloj;
+}
+void Algoritmo::setReloj(int incremento_reloj){
+    reloj+=incremento_reloj;
+}
+string Algoritmo::gettercero(){
+    return tercero;
 }
 
 Algoritmo::~Algoritmo(){
@@ -185,6 +191,7 @@ void Algoritmo::asignarcola(){
     colarr1.setqq1(qq1);
     contador=0; //reiniciar el contador
     cout<<"aqui se detiene primero";   
+
     for (int i = 0; i < 5; ++i) {
         delete[] arreglo[i]; // Limpia cada fila
         arreglo[i] = new int[4]; 
@@ -198,16 +205,14 @@ void Algoritmo::asignarcola(){
     for (int i = 0; i < tamano; i++) {
         if (datos[i][2] ==2 ) {  // condicion para asignar a la cola 2
                 arreglo[contador] = datos[i];  // Copiar proceso 
-                starreglo[i]=etiqueta[i];
+                starreglo[contador]=etiqueta[i];
             contador++;  // Incrementa el contador
         }
     }
-    for(int i=0; i<5;i++){
-        cout<<starreglo[i];
-    }
+
     RoundRobin colarr2;  // Crear el objeto
-    colarr2.setqq2(qq2);
     colarr2.setCola2(arreglo, contador, starreglo);
+    colarr2.setqq2(qq2);
     contador=0; //reiniciar el contador
 
     for (int i = 0; i < 5; ++i) {
@@ -222,7 +227,7 @@ void Algoritmo::asignarcola(){
     for (int i = 0; i < tamano; i++) {
         if (datos[i][2] ==3) {  // condicion para asignar a la cola 3
                 arreglo[contador] = datos[i];  // Copiar proceso
-                starreglo[i]=etiqueta[i];
+                starreglo[contador]=etiqueta[i];
             contador++;  // Incrementa el contador
         }
     }
@@ -249,6 +254,7 @@ void Algoritmo::asignarcola(){
         starreglo[i].clear();  // Limpia el contenido del string
     }
     contador=0;
+    colarr1.procesarrr1();
 }
 
 

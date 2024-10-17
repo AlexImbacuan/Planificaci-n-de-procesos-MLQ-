@@ -22,9 +22,11 @@ class RoundRobin: public Algoritmo{
         ~RoundRobin();
         void setCola1(int**, int, string*);
         void setCola2(int**, int, string*);
+        void moverproceso(string);
         void setqq1(int);
-        void setqq1(int);
-        int procesarrr1();
+        void setqq2(int);
+        void procesarrr1();
+        void procesarrr2();
 
 
 };

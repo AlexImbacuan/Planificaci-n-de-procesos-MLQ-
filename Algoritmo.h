@@ -32,10 +32,12 @@ class Algoritmo{
         void ejecutar(int, int, string);
         void leerarchivo();
         void asignarcola();
-        void setWT(strint, int);
-        void setCT(strint, int);
-        void setRT(strint, int);
+        void setWT(string, int);
+        void setCT(string, int);
+        void setRT(string, int);
         int getReloj();
+        void setReloj(int);
+        string gettercero(); //obtiene la tercera cola
         ~Algoritmo();
 
 };
