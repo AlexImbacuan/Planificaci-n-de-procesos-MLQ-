@@ -1,6 +1,7 @@
 #include "RoundRobin.h"
 
 RoundRobin::RoundRobin(){
+        //Algoritmo* algoritmo;
         queue1=0; //    quantum1
         queue2=0; // quantum 2
         contador=0;
@@ -20,21 +21,15 @@ RoundRobin::RoundRobin(){
 void RoundRobin::setCola1(int** arreglo_rr1, int contador_rr1, string* etiquetarr1 )
 {   
     contador=contador_rr1;
-    for (int i = 0; i < contador_rr1; i++) {
+    for (int i = 0; i < contador; i++) {
         etiqueta_rr1[i]= etiquetarr1[i];
         for (int j = 0; j < 4; j++) {
             colaRR[i][j] = arreglo_rr1[i][j]; // Copia profunda
             
         }
     }
-    cout<<"\ncolarr1\n";
-    for(int i=0; i<contador_rr1;i++){
-        cout<<etiqueta_rr1[i]<<"  ";
-        for(int j=0;j<4;j++){
-            cout<<colaRR[i][j]<<"  ";
-        }
-        cout<<"\n";    
-    }
+    imprimircola();
+    
     
 
 }
@@ -45,7 +40,6 @@ void RoundRobin::setCola2(int** arreglo_rr2, int contador_rr2, string* etiquetar
         etiqueta_rr2[i]= etiquetarr2[i];
         for (int j = 0; j < 4; j++) {
             colaRR2[i][j] = arreglo_rr2[i][j]; // Copia profunda
-            
         }
           
     }
@@ -61,22 +55,24 @@ void RoundRobin::setCola2(int** arreglo_rr2, int contador_rr2, string* etiquetar
 }
 void RoundRobin::setqq1(int q1){//cola roundRobin (quantum 1)
     queue1=q1;
+
 }   
 void RoundRobin::setqq2(int q2){//Cola round Robin (quantum 2)
+    
     queue2=q2;
 }
-void RoundRobin::procesarrr1(){
+void RoundRobin::correr1(){
+    
     int temp=0;
     string etiq_temp;
     colaRR[0][0]=colaRR[0][0]-queue1; //inicia el primero proceso mientras se organiza
+    
     setReloj(queue1);//incrementa el reloj en 1
     etiq_temp=etiqueta_rr1[0][0]; //asigna la etiqueta
     temp=0;//asigna el tiempo de respuesta
     setRT(etiq_temp, temp); //asigno valores al arreglo tiempo de respuesta segun la etiqueta
 
     if (colaRR[0][0]==0){
-        cout<<colaRR[0][0];
-        cout<<"proceso "<<etiqueta_rr1[0]<<" terminó";
         setCT(etiq_temp, getReloj());
         setWT(etiq_temp, 0); //si se acaba iniciando entonces no espero nada
     }
@@ -122,7 +118,17 @@ void RoundRobin::procesarrr1(){
         }contadorciclo++;
     }while(contadorciclo< contador);
 }       
+void RoundRobin::imprimircola(){
+    cout<<"\ncolarr1\n";
+    for(int i=0; i<contador;i++){
+        cout<<etiqueta_rr1[i]<<"  ";
+        for(int j=0;j<4;j++){
+            cout<<colaRR[i][j]<<"  ";
+        }
+        cout<<"\n";    
+    }
 
+};
 void RoundRobin::moverproceso(string eti_buscado){
     bool encontrado = false; 
     string etiqueta_buscada = eti_buscado;
@@ -155,7 +161,7 @@ void RoundRobin::moverproceso(string eti_buscado){
 
 
 }
-void RoundRobin::procesarrr2(){
+void RoundRobin::correr2(){
     
         
   

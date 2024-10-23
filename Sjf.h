@@ -2,9 +2,8 @@
 #define SJF_H
 #include<iostream>
 using namespace std;
-#include "Algoritmo.h"
 
-class Sjf: public Algoritmo{
+class Sjf{
     private:
         int** colasjf;
         string* etiqueta_sjf;

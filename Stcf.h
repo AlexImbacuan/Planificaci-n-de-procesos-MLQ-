@@ -1,10 +1,9 @@
 #ifndef STCF_H
 #define STCF_H
 #include<iostream>
-using namespace std;
-#include "Algoritmo.h"
-
-class Stcf: public Algoritmo{
+#include<string>
+using namespace std; 
+class Stcf{
     private:
         int** colaStcf;
         string* etiqueta_stcf;

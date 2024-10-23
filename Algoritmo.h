@@ -1,8 +1,11 @@
 #ifndef ALGORITMO_H
 #define ALGORITMO_H
 #include <iostream>
+#include "RoundRobin.h"
+#include "Sjf.h"
+#include "Fcfs.h"
+#include "Stcf.h"
 using namespace std;
-
 
 class Algoritmo{
     protected:
@@ -26,6 +29,12 @@ class Algoritmo{
         int qq1;
         int qq2;
         string tercero;
+        RoundRobin* colarr1;
+        RoundRobin* colarr2;
+        Sjf* colasjf;
+        Fcfs* colaFcfs;
+        Stcf* colaStcf;
+
         
     public:
         Algoritmo();
@@ -37,8 +46,11 @@ class Algoritmo{
         void setRT(string, int);
         int getReloj();
         void setReloj(int);
-        string gettercero(); //obtiene la tercera cola
+        string gettercero();
         ~Algoritmo();
+
+
+        
 
 };
 #else

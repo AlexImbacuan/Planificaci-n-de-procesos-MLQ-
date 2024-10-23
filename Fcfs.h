@@ -2,10 +2,8 @@
 #define FCFS_H
 #include<iostream>
 using namespace std;
-#include "Algoritmo.h"
 
-
-class Fcfs :public Algoritmo{
+class Fcfs{
     private:
         int** ColaFcfs;
         string* eti_fcfs;

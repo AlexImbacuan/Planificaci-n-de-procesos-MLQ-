@@ -1,6 +1,5 @@
-#include "Fcfs.h"
 #include "Algoritmo.h"
-#include "RoundRobin.h"
+#include "RoundRobin.h"  
 #include <iostream>
 
 void bienvenida(){

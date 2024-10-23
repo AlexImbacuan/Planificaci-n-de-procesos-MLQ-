@@ -1,6 +1,6 @@
 #include "Stcf.h"
 
-Stcf::Stcf():Algoritmo(){
+Stcf::Stcf(){
     etiqueta_stcf=new string[5];
     colaStcf = new int*[5];   // Inicializa el primer nivel del puntero (5 filas)
         for (int i = 0; i < 5; i++) {

@@ -1,7 +1,7 @@
     
     #include "Sjf.h"
 
-    Sjf::Sjf():Algoritmo(){
+    Sjf::Sjf(){
         etiqueta_sjf= new string[5];
 
         colasjf = new int*[5];   // Inicializa el primer nivel del puntero (5 filas)

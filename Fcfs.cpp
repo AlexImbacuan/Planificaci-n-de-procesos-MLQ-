@@ -1,4 +1,5 @@
 #include "Fcfs.h"
+using namespace std;
 
 Fcfs::Fcfs(){
     eti_fcfs = new string[5];
@@ -12,11 +13,17 @@ void Fcfs::setColaFcfs(int** arreglo_fcfs, int contador_fcfs, string* etiqueta_f
     for (int i = 0; i < contador_fcfs; i++) {
         eti_fcfs[i]=etiqueta_fcfs[i];
         for (int j = 0; j < 4; j++) {
-            ColaFcfs[i][j] = arreglo_fcfs[i][j]; // Copia profunda
-            
+            ColaFcfs[i][j] = arreglo_fcfs[i][j]; // Copia profunda    
         }
     }
-    cout<<"crear  objeto FCFS";
+     cout<<"\ncolaFCFS\n";
+    for(int i=0; i<contador_fcfs;i++){
+        cout<<etiqueta_fcfs[i]<<"  ";
+        for(int j=0;j<4;j++){
+            cout<<ColaFcfs[i][j]<<"  ";
+        }
+        cout<<"\n";
+    } 
 }
 Fcfs:: ~Fcfs(){
         // Libera la memoria dinámica asignada a ColaFcfs
@@ -25,7 +32,7 @@ Fcfs:: ~Fcfs(){
     }
     delete[] ColaFcfs;  // Libera el puntero principal de la matriz
 
-    // Libera la memoria dinámica asignada a las etiquetas
+    // Libera la memoria sdinámica asignada a las etiquetas
     delete[] eti_fcfs;
 
 }
