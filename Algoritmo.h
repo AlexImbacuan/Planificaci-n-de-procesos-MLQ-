@@ -1,20 +1,14 @@
 #ifndef ALGORITMO_H
 #define ALGORITMO_H
 #include <iostream>
-#include "RoundRobin.h"
-#include "Sjf.h"
-#include "Fcfs.h"
-#include "Stcf.h"
+#include <string>
+#include "Planificador.h"
 using namespace std;
 
 class Algoritmo{
     protected:
-        int reloj;
-        int* wt;
-        int* ct;
-        int* rt;
-        int* tat;
-        string* etiqueta;
+        
+        std::string* etiqueta;
         int* burst_time;
         int* arrival_time;
         int* queue;
@@ -22,36 +16,24 @@ class Algoritmo{
         int** datos;
         int tamano;
         int** arreglo;
-        string* starreglo;
+        std::string* starreglo;
         int contador;
     
     private:
         int qq1;
         int qq2;
-        string tercero;
-        RoundRobin* colarr1;
-        RoundRobin* colarr2;
-        Sjf* colasjf;
-        Fcfs* colaFcfs;
-        Stcf* colaStcf;
+        Planificador colas = Planificador();
+        
 
         
     public:
         Algoritmo();
-        void ejecutar(int, int, string);
+        void ejecutar(int, int);
         void leerarchivo();
         void asignarcola();
-        void setWT(string, int);
-        void setCT(string, int);
-        void setRT(string, int);
-        int getReloj();
-        void setReloj(int);
-        string gettercero();
-        ~Algoritmo();
-
-
+        void imprimir();
         
-
+        ~Algoritmo();
 };
 #else
 class Algoritmo;

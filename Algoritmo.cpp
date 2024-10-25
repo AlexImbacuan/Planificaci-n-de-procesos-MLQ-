@@ -10,46 +10,36 @@
 using namespace std;
 
 Algoritmo::Algoritmo() {
-    reloj = 0;
-    wt = new int[5]();
-    ct = new int[5]();
-    rt = new int[5]();
-    tat = new int[5]();
-    etiqueta = nullptr;
-    burst_time = nullptr;
-    arrival_time = nullptr;
-    queue = nullptr;
-    priority = nullptr;
-    datos = new int*[5]();
-    arreglo = new int*[5]();
-    starreglo = new string[5];
-    qq1 = 0;
-    qq2 = 0;
-    tamano = 0;
-    tercero = "";
-    contador = 0;
-    colarr1 = new RoundRobin();  
-    colarr2 = new RoundRobin();  
-    colasjf = new Sjf();         
-    colaFcfs = new Fcfs();       
-    colaStcf = new Stcf();    
+   
+    etiqueta = new std::string[5];
+    starreglo = new std::string[5];
+    burst_time = new int[5];
+    arrival_time = new int[5];
+    queue = new int[5];
+    priority = new int[5];
+    datos = new int*[5];
+    arreglo = new int*[5];
 
     for (int i = 0; i < 5; i++) {
-        datos[i] = new int[4](); 
-        arreglo[i] = new int[4](); 
+            datos[i] = new int[4]();
+            arreglo[i] = new int[4]();
+        }    
+    
+    for (int i = 0; i < 5; i++) {   
+        for (int j = 0; j < 4; j++) {
+            datos[i][j] = 0;
+            arreglo[i][j]=0;
+        }
     }
 }
-
-void Algoritmo::ejecutar(int qq1x, int qq2x, string tercerox) {
+void Algoritmo::ejecutar(int qq1x, int qq2x) {
     tamano = 0;
     leerarchivo();
     qq1 = qq1x;
     qq2 = qq2x;
-    tercero = tercerox;
 
     if (tamano > 0) {
         for (int i = 0; i < tamano; ++i) {
-            datos[i] = new int[4]; 
             datos[i][0] = burst_time[i];
             datos[i][1] = arrival_time[i];
             datos[i][2] = queue[i];
@@ -57,7 +47,13 @@ void Algoritmo::ejecutar(int qq1x, int qq2x, string tercerox) {
         }
 
         asignarcola();
-        colarr1->correr1();
+        colas.setArregloArchivo(arreglo,tamano,etiqueta);
+        colas.correr1();
+        colas.correr2();
+        colas.correr3();
+        imprimir();
+
+
     } else {
         cout << "No hay datos válidos para procesar." << endl;
     }
@@ -126,6 +122,7 @@ void Algoritmo::leerarchivo() {
 }
 
 void Algoritmo::asignarcola() {
+    contador=0;
     for (int i = 0; i < tamano; i++) {
         if (datos[i][2] == 1) {
             arreglo[contador] = datos[i];
@@ -134,8 +131,8 @@ void Algoritmo::asignarcola() {
         }
     }
 
-    colarr1->setCola1(arreglo, contador, starreglo);
-    colarr1->setqq1(qq1);
+    colas.setCola1(arreglo, contador, starreglo);
+    colas.setqq1(qq1);
     contador = 0;
 
     for (int i = 0; i < tamano; i++) {
@@ -146,8 +143,8 @@ void Algoritmo::asignarcola() {
         }
     }
 
-    colarr2->setCola2(arreglo, contador, starreglo);
-    colarr2->setqq2(qq2);
+    colas.setCola2(arreglo, contador, starreglo);
+    colas.setqq2(qq2);
     contador = 0;
 
     for (int i = 0; i < tamano; i++) {
@@ -157,77 +154,59 @@ void Algoritmo::asignarcola() {
             contador++;
         }
     }
-
-    if (tercero == "SJF") {
-        colasjf->setColaSjf(arreglo, contador, starreglo);
-    } else if (tercero == "FCFS") {
-        colaFcfs->setColaFcfs(arreglo, contador, starreglo);
-    } else if (tercero == "STCF") {
-        colaStcf->setColaStcf(arreglo, contador, starreglo);
-    }
+    colas.setColaFcfs(arreglo, contador, starreglo);
 
     contador = 0; // Reiniciar contador
 }
+void Algoritmo::imprimir(){
+    cout<<"\nPLANIFICACIÓN MLQ\n";
+    cout<<"\nEtiqueta\tBT\tAT\tQ\tPr\tWT\tCT\tRT\tTAT\n";
+    int tat[5];
+    int wt[5];
+    double promediowt=0;
+    double promedioct=0;
+    double promediort=0;
+    double promediotat=0;
 
-void Algoritmo::setWT(string etiq_entradawt, int wt_entrada) {
-    for (int i = 0; i < tamano; i++) { 
-        if (etiqueta[i] == etiq_entradawt) {
-            wt[i] = wt_entrada;
-            break;
-        }
+    for(int i=0; i<5;i++){
+        tat[i]=colas.getCT(i)-arrival_time[i];
+        wt[i]=colas.getCT(i)-burst_time[i];
     }
-}
-
-void Algoritmo::setCT(string etiq_entradact, int ct_entrada) {
-    for (int i = 0; i < tamano; i++) { 
-        if (etiqueta[i] == etiq_entradact) {
-            ct[i] = ct_entrada;
-            break;
+    for (int i=0; i<5;i++){
+        cout<<"   "<<etiqueta[i]<<"\t\t";
+        for(int j=0; j<4;j++){
+            cout<<datos[i][j]<<"\t";
         }
+        cout<<wt[i]<<"\t"<<colas.getCT(i)<<"\t"<<colas.getRT(i)<<"\t"<<tat[i]<<"\n";
+        promediowt+=wt[i];
+        promedioct+=colas.getCT(i);
+        promediort+=colas.getRT(i);
+        promediotat+=tat[i];
     }
+    cout<<" PROMEDIO WT: "<<promediowt/5<<"\n";
+    cout<<" PROMEDIO CT: "<<promedioct/5<<"\n";
+    cout<<" PROMEDIO RT: "<<promediort/5<<"\n";
+    cout<<" PROMEDIO TAT: "<<promediotat/5<<"\n";
 }
 
-void Algoritmo::setRT(string etiq_entradart, int rt_entrada) {
-    for (int i = 0; i < tamano; i++) { 
-        if (etiqueta[i] == etiq_entradart) {
-            rt[i] = rt_entrada;
-            break;
-        }
-    }
-}
-
-int Algoritmo::getReloj() {
-    return reloj;
-}
-
-void Algoritmo::setReloj(int incremento_reloj) {
-    reloj += incremento_reloj;
-}
-
-string Algoritmo::gettercero() {
-    return tercero;
-}
 
 Algoritmo::~Algoritmo() {
+
     delete[] etiqueta;
+    delete[] starreglo;
     delete[] burst_time;
     delete[] arrival_time;
     delete[] queue;
     delete[] priority;
     for (int i = 0; i < 5; i++) {
-        delete[] datos[i];
-        delete[] arreglo[i];  
+        if (datos[i] != nullptr) {
+            delete[] datos[i];
+        }
+        if (arreglo[i] != nullptr) {
+            delete[] arreglo[i];
+        }
     }
     delete[] datos;
     delete[] arreglo;
-    delete[] starreglo;
-    delete[] wt;
-    delete[] ct;
-    delete[] rt;
-    delete[] tat;
-    delete colarr1;  
-    delete colarr2;
-    delete colasjf;
-    delete colaFcfs;
-    delete colaStcf;
+    std::cout << "Algoritmo destruido." << std::endl;
 }

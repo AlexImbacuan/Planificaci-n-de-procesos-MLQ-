@@ -1,50 +1,36 @@
 #include "Algoritmo.h"
-#include "RoundRobin.h"  
+#include "Planificador.h"
 #include <iostream>
 
-void bienvenida(){
-  string aux;
-  int opcion;
-  Algoritmo myalgoritmo = Algoritmo();
-
-  do
-  {
-    cout<<" Selecciona alguno de los siguientes metodos de planificación"
-    <<"\n1. RR(1), RR(3), SJF"
-    <<"\n2. RR(3), RR(5), FCFS"
-    <<"\n3. RR(2), RR(3), STCF."
-    <<"\n4. Salir.";
-    getline(cin, aux);
-    opcion=(stoi(aux));
-
-    switch (opcion)
-    {
-    case 1://ejcuto la primera planificacion
-      myalgoritmo.ejecutar(1,3,"SJF");
-      break;
-    case 2://ejcuto la segunda planificacion
-      myalgoritmo.ejecutar(1,3,"FCFS");
-      break;
-    case 3://ejcuto la tercera planificacion
-      myalgoritmo.ejecutar(2,3,"STCF");
-      break;
-    case 4:
-      cout<<"hasta la proxima";
-      break;
-    default:
-      cout <<
-      "Opcion invC!lida del menC:, ingrese nuevamente una opcion correcta!"
-      << endl;
-    }
-
-  }while (opcion != 4);
-
+void bienvenida() {
+    Algoritmo myAlgoritmo = Algoritmo();
+    myAlgoritmo.ejecutar(3, 5);
 }
-int main(){
-    string nombre;
-          
-    bienvenida();
+
+int mostrarMenu() {
+    int opcion;
+    std::cout << "Menu:\n";
+    std::cout << "1. Ejecutar\n";
+    std::cout << "2. Salir\n";
+    std::cout << "Seleccione una opcion: ";
+    std::cin >> opcion;
+    return opcion;
+}
+
+int main() {
+    int opcion;
+    do {
+        opcion = mostrarMenu();
+        switch (opcion) {
+            case 1:
+                bienvenida();
+                break;
+            case 2:
+                std::cout << "Saliendo...\n";
+                break;
+            default:
+                std::cout << "Opcion invalida. Intente de nuevo.\n";
+        }
+    } while (opcion != 2);
     return 0;
 }
-
-
