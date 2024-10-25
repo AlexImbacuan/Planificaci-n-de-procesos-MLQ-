@@ -1,264 +1,212 @@
 #include "Algoritmo.h"
-#include "RoundRobin.h"
-#include "Sjf.h"
-#include "Fcfs.h"
-#include "Stcf.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <list>
 #include <cstring>
-using namespace std;
-    
 
-Algoritmo::Algoritmo(){
-    reloj= 0;
-    wt= new int[5];
-    ct= new int[5];
-    rt= new int[5];
-    tat= new int[5];
-    etiqueta= nullptr;
-    burst_time=nullptr;
-    arrival_time=nullptr;
-    queue=nullptr;
-    priority=nullptr;
+
+using namespace std;
+
+Algoritmo::Algoritmo() {
+   
+    etiqueta = new std::string[5];
+    starreglo = new std::string[5];
+    burst_time = new int[5];
+    arrival_time = new int[5];
+    queue = new int[5];
+    priority = new int[5];
     datos = new int*[5];
     arreglo = new int*[5];
-    starreglo = new string[5];
-    qq1=0;
-    qq2=0;
-    tamano=0;
-    tercero= "";
-    contador=0;
-    // Inicializa el datos
-    for (int i = 0; i < 5; i++) {
-        datos[i] = new int[4];  // Cada fila tiene 4 columnas
-    }
 
-       // Inicializa arreglo
     for (int i = 0; i < 5; i++) {
-        arreglo[i] = new int[4];  // Cada fila tiene 4 columnas
+            datos[i] = new int[4]();
+            arreglo[i] = new int[4]();
+        }    
+    
+    for (int i = 0; i < 5; i++) {   
+        for (int j = 0; j < 4; j++) {
+            datos[i][j] = 0;
+            arreglo[i][j]=0;
+        }
     }
 }
-void Algoritmo::ejecutar(int qq1x, int qq2x, string tercerox)//queue1 queue2, 3er palnificador,
-{   
-    tamano=0;
+void Algoritmo::ejecutar(int qq1x, int qq2x) {
+    tamano = 0;
     leerarchivo();
-    qq1=qq1x;
-    qq2=qq2x;
-    tercero=tercerox;
+    qq1 = qq1x;
+    qq2 = qq2x;
 
-    cout<<tamano<<"\n\n";
-    for (int i = 0; i < tamano; ++i) {
-        datos[i] = new int[4];  // Cada proceso tiene 4 atributos: burst_time, arrival_time, queue, priority
-        datos[i][0] = burst_time[i];
-        datos[i][1] = arrival_time[i];
-        datos[i][2] = queue[i];
-        datos[i][3] = priority[i];
-    }
-
-    asignarcola();  
-    
-}
-void Algoritmo::setWT(string etiq_entradawt, int wt_entrada){
-    for (int i = 0; i < tamano; i++) { 
-        if (etiqueta[i] == etiq_entradawt) {
-            wt[i] = wt_entrada;
-            break;
+    if (tamano > 0) {
+        for (int i = 0; i < tamano; ++i) {
+            datos[i][0] = burst_time[i];
+            datos[i][1] = arrival_time[i];
+            datos[i][2] = queue[i];
+            datos[i][3] = priority[i];
         }
+
+        asignarcola();
+        colas.setArregloArchivo(arreglo,tamano,etiqueta);
+        colas.correr1();
+        colas.correr2();
+        colas.correr3();
+        imprimir();
+
+
+    } else {
+        cout << "No hay datos válidos para procesar." << endl;
     }
-}
-void Algoritmo::setCT(string etiq_entradact, int ct_entrada){
-    for (int i = 0; i < tamano; i++) { 
-        if (etiqueta[i] == etiq_entradact) {
-            ct[i] = ct_entrada;
-            break;
-        }
-    }
-}
-void Algoritmo::setRT(string etiq_entradart, int rt_entrada){
-        for (int i = 0; i < tamano; i++) { 
-        if (etiqueta[i] == etiq_entradart) {
-            rt[i] = rt_entrada;
-            break;
-        }
-    }
-}
-int Algoritmo::getReloj(){
-    return reloj;
-}
-void Algoritmo::setReloj(int incremento_reloj){
-    reloj+=incremento_reloj;
-}
-string Algoritmo::gettercero(){
-    return tercero;
 }
 
-Algoritmo::~Algoritmo(){
-    delete[] etiqueta;
-    delete[] burst_time;
-    delete[] arrival_time;
-    delete[] queue;
-    delete[] priority;
-    for (int i = 0; i < 5; i++) {
-        delete[] datos[i];   // Libera cada fila de datos
-        delete[] arreglo[i];  // Libera cada fila de arreglo
-    }
-    delete[] datos;  // Libera el puntero de datos
-    delete[] arreglo; // Libera el puntero de arreglo
-    delete[] starreglo;
-    delete[] wt;
-    delete[] ct;
-    delete[] rt;
-    delete[] tat;
-}
-
-void Algoritmo::leerarchivo(){
-    
-
+void Algoritmo::leerarchivo() {
     string linea;
-    
-    ifstream archivo ("mlq001.txt");
-    if (archivo.is_open()) {
-        while (getline(archivo, linea)) {
-            tamano++; 
-            }            
-        archivo.close();      
-    }    
-    else {
+    ifstream archivo("mlq001.txt");
+    if (!archivo.is_open()) {
         cout << "No se pudo abrir el archivo" << endl;
+        return;
     }
-  
-    tamano=tamano-2;
+
+    while (getline(archivo, linea)) {
+        tamano++; 
+    }
+    archivo.clear();
+    archivo.seekg(0, ios::beg);
+
+    tamano -= 2; // Ajusta el tamaño según la lógica de tu archivo
+    if (tamano <= 0) {
+        cout << "No hay datos válidos en el archivo." << endl;
+        return;
+    }
+
     etiqueta = new string[tamano];
     burst_time = new int[tamano]();
     arrival_time = new int[tamano]();
     queue = new int[tamano]();
     priority = new int[tamano]();
 
+    getline(archivo, linea); // Salta la primera línea
+    getline(archivo, linea); // Salta la segunda línea
+    contador = 0;
 
-    archivo.open("mlq001.txt");
-    getline(archivo, linea);
-    getline(archivo, linea);
-    if (archivo.is_open()) {
-        while (getline(archivo, linea)) {
+    while (getline(archivo, linea)) {
+        stringstream ss(linea);
+        string dato;
 
-            stringstream ss(linea);
-            string dato;
-                        
-            getline(ss, dato, ';');
-            etiqueta[contador]=dato;
-            
-            getline(ss, dato, ';');
-            if(!dato.empty()){
-                burst_time[contador]=stoi(dato);
-            }
-            
-            getline(ss, dato, ';');
-            if(!dato.empty()){
-                arrival_time[contador]=stoi(dato);
-            }
-            getline(ss, dato, ';');
-            if(!dato.empty()){
-                queue[contador]=stoi(dato);
-            }
-            getline(ss, dato, ';');
-            if(!dato.empty()){
-                priority[contador]=stoi(dato);
-            }
-       
-            contador+=1;
-            //cout<<contador;
+        getline(ss, dato, ';');
+        etiqueta[contador] = dato;
+
+        getline(ss, dato, ';');
+        if (!dato.empty()) {
+            burst_time[contador] = stoi(dato);
         }
-        archivo.close();
-    }else {
-        cout << "No se pudo abrir el archivoo" << endl;
-    }
-    contador=0;
 
+        getline(ss, dato, ';');
+        if (!dato.empty()) {
+            arrival_time[contador] = stoi(dato);
+        }
+
+        getline(ss, dato, ';');
+        if (!dato.empty()) {
+            queue[contador] = stoi(dato);
+        }
+
+        getline(ss, dato, ';');
+        if (!dato.empty()) {
+            priority[contador] = stoi(dato);
+        }
+
+        contador++;
+    }
+    archivo.close();
 }
-void Algoritmo::asignarcola(){
-    for (int i = 0; i < tamano; i++) {
-        if (datos[i][2] == 1) {  // condicion para asignar a la cola 1
-                arreglo[contador] = datos[i];  // Copia proceso
-                starreglo[i]=etiqueta[i];
-            contador++;  // Incrementa el contador
-        }
-    }
-    RoundRobin colarr1;  // Crear el objeto
-    colarr1.setCola1(arreglo, contador, starreglo);
-    colarr1.setqq1(qq1);
-    contador=0; //reiniciar el contador
-    cout<<"aqui se detiene primero";   
 
-    for (int i = 0; i < 5; ++i) {
-        delete[] arreglo[i]; // Limpia cada fila
-        arreglo[i] = new int[4]; 
-    }
-    cout<<"aqui se detiene despues";
-    for (int i = 0; i < tamano; ++i) {
-        starreglo[i].clear();  // Limpia el contenido del string
-    }
-
-
-    for (int i = 0; i < tamano; i++) {
-        if (datos[i][2] ==2 ) {  // condicion para asignar a la cola 2
-                arreglo[contador] = datos[i];  // Copiar proceso 
-                starreglo[contador]=etiqueta[i];
-            contador++;  // Incrementa el contador
-        }
-    }
-
-    RoundRobin colarr2;  // Crear el objeto
-    colarr2.setCola2(arreglo, contador, starreglo);
-    colarr2.setqq2(qq2);
-    contador=0; //reiniciar el contador
-
-    for (int i = 0; i < 5; ++i) {
-        delete[] arreglo[i]; // Limpia cada fila
-        arreglo[i] = new int[4]; 
-    }
-    for (int i = 0; i < tamano; ++i) {
-        starreglo[i].clear();  // Limpia el contenido del string
-    }
-    
-
-    for (int i = 0; i < tamano; i++) {
-        if (datos[i][2] ==3) {  // condicion para asignar a la cola 3
-                arreglo[contador] = datos[i];  // Copiar proceso
-                starreglo[contador]=etiqueta[i];
-            contador++;  // Incrementa el contador
-        }
-    }
-
-    //Asigna la tercera cola segun el metodo de planificacion.
-    if(tercero=="SJF"){
-        Sjf colasjf = Sjf();
-        colasjf.setColaSjf(arreglo, contador, starreglo);
-    } 
-    if(tercero=="FCFS"){
-        Fcfs colaFcfs= Fcfs();
-        colaFcfs.setColaFcfs(arreglo, contador, starreglo);
-    }
-    if(tercero=="STCF"){
-        Stcf colaStcf= Stcf();
-        colaStcf.setColaStcf(arreglo, contador, starreglo);
-    }
-
-    for (int i = 0; i < 5; ++i) {
-        delete[] arreglo[i]; // Limpia cada fila
-        arreglo[i] = new int[4]; 
-    }
-    for (int i = 0; i < tamano; ++i) {
-        starreglo[i].clear();  // Limpia el contenido del string
-    }
+void Algoritmo::asignarcola() {
     contador=0;
-    colarr1.procesarrr1();
+    for (int i = 0; i < tamano; i++) {
+        if (datos[i][2] == 1) {
+            arreglo[contador] = datos[i];
+            starreglo[contador] = etiqueta[i];
+            contador++;
+        }
+    }
+
+    colas.setCola1(arreglo, contador, starreglo);
+    colas.setqq1(qq1);
+    contador = 0;
+
+    for (int i = 0; i < tamano; i++) {
+        if (datos[i][2] == 2) {
+            arreglo[contador] = datos[i];
+            starreglo[contador] = etiqueta[i];
+            contador++;
+        }
+    }
+
+    colas.setCola2(arreglo, contador, starreglo);
+    colas.setqq2(qq2);
+    contador = 0;
+
+    for (int i = 0; i < tamano; i++) {
+        if (datos[i][2] == 3) {
+            arreglo[contador] = datos[i];
+            starreglo[contador] = etiqueta[i];
+            contador++;
+        }
+    }
+    colas.setColaFcfs(arreglo, contador, starreglo);
+
+    contador = 0; // Reiniciar contador
+}
+void Algoritmo::imprimir(){
+    cout<<"\nPLANIFICACIÓN MLQ\n";
+    cout<<"\nEtiqueta\tBT\tAT\tQ\tPr\tWT\tCT\tRT\tTAT\n";
+    int tat[5];
+    int wt[5];
+    double promediowt=0;
+    double promedioct=0;
+    double promediort=0;
+    double promediotat=0;
+
+    for(int i=0; i<5;i++){
+        tat[i]=colas.getCT(i)-arrival_time[i];
+        wt[i]=colas.getCT(i)-burst_time[i];
+    }
+    for (int i=0; i<5;i++){
+        cout<<"   "<<etiqueta[i]<<"\t\t";
+        for(int j=0; j<4;j++){
+            cout<<datos[i][j]<<"\t";
+        }
+        cout<<wt[i]<<"\t"<<colas.getCT(i)<<"\t"<<colas.getRT(i)<<"\t"<<tat[i]<<"\n";
+        promediowt+=wt[i];
+        promedioct+=colas.getCT(i);
+        promediort+=colas.getRT(i);
+        promediotat+=tat[i];
+    }
+    cout<<" PROMEDIO WT: "<<promediowt/5<<"\n";
+    cout<<" PROMEDIO CT: "<<promedioct/5<<"\n";
+    cout<<" PROMEDIO RT: "<<promediort/5<<"\n";
+    cout<<" PROMEDIO TAT: "<<promediotat/5<<"\n";
 }
 
 
+Algoritmo::~Algoritmo() {
 
-
-
-
+    delete[] etiqueta;
+    delete[] starreglo;
+    delete[] burst_time;
+    delete[] arrival_time;
+    delete[] queue;
+    delete[] priority;
+    for (int i = 0; i < 5; i++) {
+        if (datos[i] != nullptr) {
+            delete[] datos[i];
+        }
+        if (arreglo[i] != nullptr) {
+            delete[] arreglo[i];
+        }
+    }
+    delete[] datos;
+    delete[] arreglo;
+    std::cout << "Algoritmo destruido." << std::endl;
+}
